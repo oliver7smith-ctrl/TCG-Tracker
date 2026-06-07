@@ -1,0 +1,33 @@
+name: Unpack project zip
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unzip project
+        run: |
+          ZIP_FILE=$(find . -maxdepth 1 -name "*.zip" | head -n 1)
+          unzip -o "$ZIP_FILE" -d extracted
+          INNER_DIR=$(find extracted -mindepth 1 -maxdepth 1 -type d | head -n 1)
+          cp -R "$INNER_DIR"/. .
+          rm -rf extracted
+          rm -f "$ZIP_FILE"
+
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "Extract project files" || echo "Nothing to commit"
+          git push
