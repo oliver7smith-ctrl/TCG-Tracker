@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/check-stock?tier=all",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
