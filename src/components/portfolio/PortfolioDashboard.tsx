@@ -47,7 +47,7 @@ export function PortfolioDashboard({ portfolio, summary }: Props) {
                   <PieChart>
                     <Pie data={summary.categoryBreakdown} dataKey="value" cx="50%" cy="50%" innerRadius={40} outerRadius={60}>
                       {summary.categoryBreakdown.map((entry, i) => (
-                        <Cell key={`cell-${i}`} fill={entry.color} />
+                        <Cell key={`cell-${i}`} />
                       ))}
                     </Pie>
                     <Tooltip formatter={(v:number) => formatPrice(v)} />
