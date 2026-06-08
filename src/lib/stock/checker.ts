@@ -104,7 +104,7 @@ export async function processResult(rp: RetailerProduct, result: StockCheckResul
   if (result.responseMs > 0) {
     await db.rpc("update_retailer_reliability", {
       p_retailer_id: rp.retailer_id, p_response_ms: result.responseMs, p_success: !isError,
-    }).maybeSingle().catch(() => null)
+    }).maybeSingle()
   }
 
   return eventIds
