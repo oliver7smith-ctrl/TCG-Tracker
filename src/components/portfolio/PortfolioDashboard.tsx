@@ -58,7 +58,8 @@ export function PortfolioDashboard({ portfolio, summary }: Props) {
                 {summary.categoryBreakdown.map(cat => (
                   <div key={cat.category} className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background:cat.color }} />
+                      <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+     style={{ background: "var(--green)" }} />
                       <span style={{ color:"var(--text)" }}>{cat.category}</span>
                     </div>
                     <div className="text-right">
