@@ -60,7 +60,7 @@ export default async function ProductPage({ params }: P) {
         <div className="lg:col-span-2 space-y-6">
           <RetailerStockTable retailers={retailersRes.data ?? []} />
           {canSeeHistory && (priceHistRes.data ?? []).length > 0 && (
-            <PriceHistoryChart data={priceHistRes.data ?? []} />
+           <PriceHistoryChart data={(priceHistRes.data ?? []) as any} />
           )}
           {(eventsRes.data ?? []).length > 0 && <StockHistory events={eventsRes.data ?? []} />}
         </div>
