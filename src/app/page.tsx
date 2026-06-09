@@ -46,8 +46,8 @@ export default function HomePage() {
             <span className="font-black text-sm" style={{ color: "var(--text)" }}>Collectible Tracker</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link href="/auth/login" className="btn-secondary btn-sm hidden sm:flex">Sign in</Link>
-            <Link href="/auth/signup" className="btn-primary btn-sm">Start free →</Link>
+           <Link href="/login" className="btn-secondary btn-sm hidden sm:flex">Sign in</Link>
+            <Link href="/login" className="btn-primary btn-sm">Start free →</Link>
           </div>
         </div>
       </nav>
@@ -67,8 +67,8 @@ export default function HomePage() {
           Track stock across 20+ UK retailers. Manage your entire collection. Get AI-powered investment insights. The app serious collectors use every day.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-5">
-          <Link href="/auth/signup" className="btn-primary btn-lg">Start for free →</Link>
-          <Link href="/auth/signup?plan=premium" className="btn-secondary btn-lg">Try Premium free</Link>
+          <Link href="/login" className="btn-primary btn-lg">Start for free →</Link>
+          <Link href="/login" className="btn-secondary btn-lg">Try Premium free</Link>
         </div>
         <p className="text-xs" style={{ color: "var(--dim)" }}>Free forever · No credit card · iPhone &amp; Android</p>
       </section>
@@ -126,8 +126,8 @@ export default function HomePage() {
             <span className="font-black" style={{ color: "var(--text)" }}>⚡ Collectible Tracker</span>
           </div>
           <div className="flex gap-6 text-xs" style={{ color: "var(--dim)" }}>
-            <Link href="/auth/login">Sign in</Link>
-            <Link href="/auth/signup">Sign up</Link>
+            <Link href="/login">Sign in</Link>
+            <Link href="/login">Sign up</Link>
             <a href="mailto:hello@collectibletracker.app">Contact</a>
           </div>
           <p className="text-xs" style={{ color: "var(--dim)" }}>Always verify at retailer checkout.</p>
