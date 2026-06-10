@@ -9,8 +9,8 @@ import { StockHistory }       from "@/components/products/StockHistory"
 import { WatchButton }        from "@/components/watchlist/WatchButton"
 
 interface P {
-  params: { slug: string }
-  searchParams?: { id?: string }
+  params: Promise<{ slug: string }>
+  searchParams?: Promise<{ id?: string }>
 }
 
 export async function generateMetadata({ params }: P): Promise<Metadata> {
@@ -23,8 +23,9 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
 export default async function ProductPage({ params, searchParams }: P) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const { slug } = params
-const id = searchParams?.id
+  const { slug } = await params
+const sp = searchParams ? await searchParams : {}
+const id = sp.id
 
 let productQuery = supabase
   .from("v_products")
