@@ -8,7 +8,10 @@ import { PriceHistoryChart }  from "@/components/products/PriceHistoryChart"
 import { StockHistory }       from "@/components/products/StockHistory"
 import { WatchButton }        from "@/components/watchlist/WatchButton"
 
-interface P { params: { slug: string } }
+interface P {
+  params: { slug: string }
+  searchParams?: { id?: string }
+}
 
 export async function generateMetadata({ params }: P): Promise<Metadata> {
   const supabase = await createClient()
@@ -17,22 +20,28 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
   return { title: data ? `${data.name}${data.set_name ? ` — ${data.set_name}` : ""}` : "Product" }
 }
 
-export default async function ProductPage({ params }: P) {
+export default async function ProductPage({ params, searchParams }: P) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const { slug } = params
+const id = searchParams?.id
 
-  const { data: product, error: productError } = await supabase
+let productQuery = supabase
   .from("v_products")
   .select("*")
-  .eq("slug", slug)
-  .maybeSingle()
 
-if (productError || !product) {
-  console.error("Product not found", { slug, productError })
-  notFound()
+if (id) {
+  productQuery = productQuery.eq("id", id)
+} else {
+  productQuery = productQuery.eq("slug", slug)
 }
 
+const { data: product, error: productError } = await productQuery.maybeSingle()
+
+if (productError || !product) {
+  console.error("Product not found", { slug, id, productError })
+  notFound()
+}
 const watchlistRes = user
   ? await supabase
       .from("watchlist")
