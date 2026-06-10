@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
 
 export default async function ProductPage({ params, searchParams }: P) {
   const supabase = await createClient()
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -37,18 +38,74 @@ export default async function ProductPage({ params, searchParams }: P) {
   const sp = searchParams ? await searchParams : {}
   const id = sp.id
 
-  let productQuery = supabase.from("v_products").select("*")
+  let product: any = null
 
   if (id) {
-    productQuery = productQuery.eq("id", id)
-  } else {
-    productQuery = productQuery.eq("slug", slug)
+    const { data } = await supabase
+      .from("v_products")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle()
+
+    product = data
   }
 
-  const { data: product, error: productError } = await productQuery.maybeSingle()
+  if (!product && slug) {
+    const { data } = await supabase
+      .from("v_products")
+      .select("*")
+      .eq("slug", slug)
+      .maybeSingle()
 
-  if (productError || !product) {
-    console.error("Product not found", { slug, id, productError })
+    product = data
+  }
+
+  if (!product && id) {
+    const { data } = await supabase
+      .from("products")
+      .select("*, category:categories(*)")
+      .eq("id", id)
+      .maybeSingle()
+
+    if (data) {
+      product = {
+        ...data,
+        category_name: data.category?.name ?? null,
+        category_slug: data.category?.slug ?? null,
+        category_color: data.category?.color ?? null,
+        category_icon: data.category?.icon_emoji ?? null,
+        in_stock_count: 0,
+        retailer_count: 0,
+        best_price: null,
+        last_in_stock_at: null,
+      }
+    }
+  }
+
+  if (!product && slug) {
+    const { data } = await supabase
+      .from("products")
+      .select("*, category:categories(*)")
+      .eq("slug", slug)
+      .maybeSingle()
+
+    if (data) {
+      product = {
+        ...data,
+        category_name: data.category?.name ?? null,
+        category_slug: data.category?.slug ?? null,
+        category_color: data.category?.color ?? null,
+        category_icon: data.category?.icon_emoji ?? null,
+        in_stock_count: 0,
+        retailer_count: 0,
+        best_price: null,
+        last_in_stock_at: null,
+      }
+    }
+  }
+
+  if (!product) {
+    console.error("Product not found", { slug, id })
     notFound()
   }
 
@@ -128,7 +185,7 @@ export default async function ProductPage({ params, searchParams }: P) {
               ["Set", product.set_name],
               ["Series", product.series],
               ["Type", product.product_type],
-              ["RRP", product.rrp_gbp ? `£${product.rrp_gbp.toFixed(2)}` : null],
+              ["RRP", product.rrp_gbp ? `£${Number(product.rrp_gbp).toFixed(2)}` : null],
               [
                 "Release",
                 product.release_date
@@ -141,11 +198,11 @@ export default async function ProductPage({ params, searchParams }: P) {
               ],
               [
                 "Best Price",
-                product.best_price ? `£${product.best_price.toFixed(2)}` : null,
+                product.best_price ? `£${Number(product.best_price).toFixed(2)}` : null,
               ],
               [
                 "In Stock",
-                `${product.in_stock_count} of ${product.retailer_count} retailers`,
+                `${product.in_stock_count ?? 0} of ${product.retailer_count ?? 0} retailers`,
               ],
             ].map(([label, value]) =>
               value ? (
@@ -188,7 +245,7 @@ export default async function ProductPage({ params, searchParams }: P) {
               </div>
 
               <p className="text-xs mt-2" style={{ color: "var(--muted)" }}>
-                Based on {product.watchlist_count} watchers and restock frequency
+                Based on {product.watchlist_count ?? 0} watchers and restock frequency
               </p>
             </div>
           )}
