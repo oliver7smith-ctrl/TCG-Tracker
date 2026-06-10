@@ -55,7 +55,7 @@ export function ProductGrid({ products, watchlistIds: init, userId }: Props) {
           const inStock   = p.in_stock_count > 0
           const isTracked = tracked.has(p.id)
           return (
-            <Link key={p.id} href={`/explore/${p.slug}`}
+            <Link key={p.id} href={`/explore/${p.slug}?id=${p.id}`}
               className="card overflow-hidden hover:border-brand-500/30 transition-all hover:shadow-card-hover group cursor-pointer">
               <div className="relative h-36 flex items-center justify-center overflow-hidden" style={{ background:"var(--surface2)" }}>
                 {p.image_url
